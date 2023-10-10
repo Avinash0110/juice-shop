@@ -266,39 +266,39 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   smoke-test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "Check out Git repository"
-  #       uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0
-  #     - name: "Use Node.js 18"
-  #       uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d #v3.8.1
-  #       with:
-  #         node-version: 18
-  #     - name: "Install CLI tools"
-  #       run: |
-  #         npm install -g @angular/cli@$ANGULAR_CLI_VERSION
-  #         npm install -g @cyclonedx/cyclonedx-npm@$CYCLONEDX_NPM_VERSION
-  #         npm install -g grunt-cli
-  #     - name: "Set packaging options for Grunt"
-  #       run: |
-  #         echo "PCKG_OS_NAME=linux" >> $GITHUB_ENV
-  #         echo "PCKG_NODE_VERSION=18" >> $GITHUB_ENV
-  #         echo "PCKG_CPU_ARCH=x64" >> $GITHUB_ENV
-  #     - name: "Package application"
-  #       run: |
-  #         npm install --production
-  #         npm run package:ci
-  #     - name: "Unpack application archive"
-  #       run: |
-  #         cd dist
-  #         tar -zxf juice-shop-*.tgz
-  #     - name: "Execute smoke test"
-  #       run: |
-  #         cd dist/juice-shop_*
-  #         npm start &
-  #         cd ../..
-  #         chmod +x test/smoke/smoke-test.sh
-  #         test/smoke/smoke-test.sh http://localhost:3000
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check out Git repository"
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0
+      - name: "Use Node.js 18"
+        uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d #v3.8.1
+        with:
+          node-version: 18
+      - name: "Install CLI tools"
+        run: |
+          npm install -g @angular/cli@$ANGULAR_CLI_VERSION
+          npm install -g @cyclonedx/cyclonedx-npm@$CYCLONEDX_NPM_VERSION
+          npm install -g grunt-cli
+      - name: "Set packaging options for Grunt"
+        run: |
+          echo "PCKG_OS_NAME=linux" >> $GITHUB_ENV
+          echo "PCKG_NODE_VERSION=18" >> $GITHUB_ENV
+          echo "PCKG_CPU_ARCH=x64" >> $GITHUB_ENV
+      - name: "Package application"
+        run: |
+          npm install --production
+          npm run package:ci
+      - name: "Unpack application archive"
+        run: |
+          cd dist
+          tar -zxf juice-shop-*.tgz
+      - name: "Execute smoke test"
+        run: |
+          cd dist/juice-shop_*
+          npm start &
+          cd ../..
+          chmod +x test/smoke/smoke-test.sh
+          test/smoke/smoke-test.sh http://localhost:3000
   docker-test:
     runs-on: ubuntu-latest
     steps:
@@ -383,7 +383,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-  DAST analysis:
+  scan-with-dastardly:
     runs-on: ubuntu-latest
     steps:
       - name: Run Dastardly Action Step
@@ -391,7 +391,6 @@ jobs:
         uses: PortSwigger/dastardly-github-action@main
         with:
           target-url: "http://localhost:3000/#/"
-
       - name: Publish Test Report
         if: always() # Forces this step to always run
         uses: mikepenz/action-junit-report@v3
